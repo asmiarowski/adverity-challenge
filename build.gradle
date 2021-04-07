@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.4.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'io.freefair.lombok' version '5.3.3.3'
 	id 'java'
 }
 
@@ -15,6 +16,21 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// MySQL database support
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.flywaydb:flyway-core'
+	runtimeOnly 'mysql:mysql-connector-java'
+
+	// Documentation generation
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+	// JSON support with jackson
+	implementation 'org.springframework.boot:spring-boot-starter-json'
+
+	// HSQL in-memory database for testing
+	testImplementation 'org.hsqldb:hsqldb'
 }
 
 test {
