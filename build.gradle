@@ -17,6 +17,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	// Validation annotations
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 	// MySQL database support
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -28,6 +31,10 @@ dependencies {
 
 	// JSON support with jackson
 	implementation 'org.springframework.boot:spring-boot-starter-json'
+
+	// CSV support with jackson
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.12.2'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.12.2'
 
 	// HSQL in-memory database for testing
 	testImplementation 'org.hsqldb:hsqldb'

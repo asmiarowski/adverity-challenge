@@ -21,10 +21,12 @@ public class CampaignStatisticsController {
 
     private final CampaignStatsService service;
 
-    @RequestMapping("/daily")
+    @RequestMapping(path = "/daily")
     public Page<CampaignDailyStats> getDaily(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate since,
                                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate until,
                                              Pageable pageable) {
-        return service.getDaily(since, until, pageable);
+        var result = service.getDaily(since, until, pageable);
+
+        return result;
     }
 }

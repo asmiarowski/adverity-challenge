@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,15 +27,12 @@ public abstract class BaseApiControllerTest {
      *
      * @param mockResponse Result of mockMvc.perform()
      * @param response     JSON response that should be returned from the request
-     * @return Response from mockMvc.perform for further processing
      */
-    protected ResultActions validateSuccessJsonResponse(ResultActions mockResponse, String response) throws Exception {
+    protected void validateSuccessJsonResponse(ResultActions mockResponse, String response) throws Exception {
         if (response != null) {
-            mockResponse
-                    .andExpect(content().json(response))
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+            mockResponse.andExpect(content().json(response));
         }
+
         mockResponse.andExpect(status().isOk());
-        return mockResponse;
     }
 }
