@@ -5,6 +5,7 @@ import com.example.adveritychallenge.repository.CampaignDailyStatsRepository;
 import com.example.adveritychallenge.service.importer.exceptions.ImportFileNotSpecifiedException;
 import com.example.adveritychallenge.service.importer.lock.ImportLock;
 import com.example.adveritychallenge.service.importer.lock.ImportLockRepository;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
@@ -116,7 +117,7 @@ public class CampaignDailyStatsImporter {
         return csvMapper.readerFor(CampaignDailyStatsCsvLine.class).with(schema);
     }
 
-    private void readLine(com.fasterxml.jackson.databind.MappingIterator<Object> mappingIterator) {
+    private void readLine(MappingIterator<Object> mappingIterator) {
         try {
             var line = (CampaignDailyStatsCsvLine) mappingIterator.next();
 

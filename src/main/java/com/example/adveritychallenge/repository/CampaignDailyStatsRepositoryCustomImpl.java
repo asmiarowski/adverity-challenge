@@ -72,7 +72,9 @@ class CampaignDailyStatsRepositoryCustomImpl implements CampaignDailyStatsReposi
                     groupByExpression,
                     root.get(groupBy.getValue()),
                     criteriaBuilder.sumAsLong(root.get("impressions")),
-                    criteriaBuilder.sumAsLong(root.get("clicks"))
+                    criteriaBuilder.sumAsLong(root.get("clicks")),
+                    // MySQL is rounding down, so to fix the precision issue the value is multiplied by 1000 and has to be divided by 10 in java.
+                    criteriaBuilder.prod(1000.0, criteriaBuilder.quot(criteriaBuilder.sumAsDouble(root.get("clicks")), criteriaBuilder.sumAsDouble(root.get("impressions"))))
             ));
         }
 

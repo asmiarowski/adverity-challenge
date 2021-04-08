@@ -1,12 +1,17 @@
 package com.example.adveritychallenge.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 @Entity
@@ -34,4 +39,30 @@ public class CampaignDailyStats {
     private Integer clicks;
 
     private LocalDate day;
+
+    @Setter(AccessLevel.NONE)
+    private BigDecimal ctr;
+
+    public void setImpressions(Long impressions) {
+        this.impressions = impressions;
+        recalculateCtr();
+    }
+
+    public void setClicks(Integer clicks) {
+        this.clicks = clicks;
+        recalculateCtr();
+    }
+
+    public BigDecimal getCtr() {
+        return this.ctr.setScale(1, RoundingMode.HALF_UP);
+    }
+
+    private void recalculateCtr() {
+        if (clicks != null && impressions != null && impressions > 0) {
+            ctr = BigDecimal.valueOf((double) clicks / (double) impressions * 100)
+                    .setScale(1, RoundingMode.HALF_UP);
+        } else {
+            ctr = BigDecimal.valueOf(0).setScale(1, RoundingMode.HALF_UP);
+        }
+    }
 }

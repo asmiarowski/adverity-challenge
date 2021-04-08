@@ -4,6 +4,8 @@ import com.example.adveritychallenge.data.CampaignDailyStats;
 import com.example.adveritychallenge.data.CampaignStatsAggregate;
 import com.example.adveritychallenge.data.DailyStatsGroupBy;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 /**
@@ -88,6 +90,9 @@ public class DatabaseData {
         aggregated.setClicks((long) stats1.getClicks() + stats2.getClicks() + stats3.getClicks());
         aggregated.setGroupedBy(DailyStatsGroupBy.CAMPAIGN);
         aggregated.setGroupedByValue(stats1.getCampaign());
+        var ctr = BigDecimal.valueOf((double) aggregated.getClicks() / (double) aggregated.getImpressions() * 100.0)
+                .setScale(1, RoundingMode.HALF_UP);
+        aggregated.setCtr(ctr);
 
         return aggregated;
     }
@@ -102,6 +107,9 @@ public class DatabaseData {
         aggregated.setClicks((long) stats1.getClicks() + stats2.getClicks() + stats3.getClicks());
         aggregated.setGroupedBy(DailyStatsGroupBy.CAMPAIGN);
         aggregated.setGroupedByValue(stats1.getCampaign());
+        var ctr = BigDecimal.valueOf((double) aggregated.getClicks() / (double) aggregated.getImpressions() * 100.0)
+                .setScale(1, RoundingMode.HALF_UP);
+        aggregated.setCtr(ctr);
 
         return aggregated;
     }
@@ -120,6 +128,9 @@ public class DatabaseData {
                 stats5.getClicks());
         aggregated.setGroupedBy(DailyStatsGroupBy.DATASOURCE);
         aggregated.setGroupedByValue(stats1.getDatasource());
+        var ctr = BigDecimal.valueOf((double) aggregated.getClicks() / (double) aggregated.getImpressions() * 100.0)
+                .setScale(1, RoundingMode.HALF_UP);
+        aggregated.setCtr(ctr);
 
         return aggregated;
     }
@@ -132,6 +143,9 @@ public class DatabaseData {
         aggregated.setClicks((long) stats.getClicks());
         aggregated.setGroupedBy(DailyStatsGroupBy.DATASOURCE);
         aggregated.setGroupedByValue(stats.getDatasource());
+        var ctr = BigDecimal.valueOf((double) aggregated.getClicks() / (double) aggregated.getImpressions() * 100.0)
+                .setScale(1, RoundingMode.HALF_UP);
+        aggregated.setCtr(ctr);
 
         return aggregated;
     }
