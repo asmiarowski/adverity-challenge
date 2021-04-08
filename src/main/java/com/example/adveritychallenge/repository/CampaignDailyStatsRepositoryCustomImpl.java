@@ -38,13 +38,13 @@ class CampaignDailyStatsRepositoryCustomImpl implements CampaignDailyStatsReposi
         var predicates = getPredicatesForFindAllBetweenDates(criteriaBuilder, root, since, until, campaignFilters, datasourceFilters);
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
 
-        var query = entityManager.createQuery(criteriaQuery);
-        query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
-        query.setMaxResults(pageable.getPageSize());
+        var query = entityManager.createQuery(criteriaQuery)
+                .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+                .setMaxResults(pageable.getPageSize());
 
         var totalRows = getTotalRowsForFindAllBetweenDates(criteriaBuilder, since, until, campaignFilters,
                 datasourceFilters, null);
-        return new PageImpl<>(entityManager.createQuery(criteriaQuery).getResultList(), pageable, totalRows);
+        return new PageImpl<>(query.getResultList(), pageable, totalRows);
     }
 
     @Override
@@ -75,14 +75,14 @@ class CampaignDailyStatsRepositoryCustomImpl implements CampaignDailyStatsReposi
             ));
         }
 
-        var query = entityManager.createQuery(criteriaQuery);
-        query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
-        query.setMaxResults(pageable.getPageSize());
+        var query = entityManager.createQuery(criteriaQuery)
+                .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+                .setMaxResults(pageable.getPageSize());
 
         var totalRows = getTotalRowsForFindAllBetweenDates(criteriaBuilder, since, until, campaignFilters,
                 datasourceFilters, groupBy);
 
-        return new PageImpl<>(entityManager.createQuery(criteriaQuery).getResultList(), pageable, totalRows);
+        return new PageImpl<>(query.getResultList(), pageable, totalRows);
     }
 
     private Long getTotalRowsForFindAllBetweenDates(

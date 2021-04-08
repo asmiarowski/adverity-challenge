@@ -195,4 +195,25 @@ public class CampaignStatisticsIntegrationTest extends BaseApiControllerTest {
 
         validateSuccessJsonResponse(response, serializer.writeValueAsString(resultPage));
     }
+
+    @Test
+    void testReturnsDailyCampaignStatisticsSecondPage() throws Exception {
+        var dateSince = LocalDate.of(2019, 4, 27);
+        var dateUntil = LocalDate.of(2019, 4, 29);
+        var pageable = PageRequest.of(1, 3);
+        var resultPage = new PageImpl<>(List.of(
+                createCampaignDailyStatOOC27th(),
+                createCampaignDailyStatOOC28th(),
+                createCampaignDailyStatOOC29th()
+        ), pageable, 6);
+
+        ResultActions response = mockMvc.perform(get("/campaign-statistics/daily")
+                .param("since", dateSince.toString())
+                .param("until", dateUntil.toString())
+                .param("page", "1")
+                .param("size", "3")
+        );
+
+        validateSuccessJsonResponse(response, serializer.writeValueAsString(resultPage));
+    }
 }
