@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class CampaignDailyStats {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Integer id;
 

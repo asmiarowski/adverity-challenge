@@ -41,7 +41,7 @@ public class CampaignStatisticsController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate until,
             @RequestParam(required = false, defaultValue = "") List<String> campaignFilters,
             @RequestParam(required = false, defaultValue = "") List<String> datasourceFilters,
-            @RequestParam(required = false) DailyStatsGroupBy groupBy,
+            @RequestParam DailyStatsGroupBy groupBy,
             Pageable pageable
     ) {
         return service.getAggregatedStatsBetweenDates(since, until, campaignFilters, datasourceFilters, groupBy, pageable);

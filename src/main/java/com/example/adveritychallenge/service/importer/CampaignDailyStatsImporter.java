@@ -52,17 +52,24 @@ public class CampaignDailyStatsImporter {
      */
     private final List<CampaignDailyStats> campaignDailyStatsList = new ArrayList<>();
 
-    @Value("${spring.jpa.properties.hibernate.jdbc.batch_size:1000}")
+    @Value("${spring.jpa.properties.hibernate.jdbc.batch_size:30}")
     private int batchSize;
 
-    public void run() {
+    public boolean run() {
+        if (importerProperties.getDailyCampaignFilePath().isEmpty()) {
+            throw new RuntimeException("No file specified for csv import of campaign daily stats.");
+        }
+
         log.info("Starting campaign daily stats import from csv file.");
+
+        long startTime = System.nanoTime();
 
         var lock = importLockRepository.findByImporterType(CAMPAIGN_DAILY_STATS_CSV)
                 .orElse(new ImportLock(CAMPAIGN_DAILY_STATS_CSV));
 
         if (lock.isLocked()) {
             log.info("Campaign daily stats already imported. Skipping.");
+            return false;
         }
 
         var file = new File(importerProperties.getDailyCampaignFilePath());
@@ -82,20 +89,23 @@ public class CampaignDailyStatsImporter {
                 saveBulk();
             }
         } catch (FileNotFoundException e) {
-            log.error("Unable to find file {}", file);
-            return;
+            throw new RuntimeException(String.format("Unable to find file %s", file));
         } catch (IOException e) {
-            log.error("An error occurred while reading file {}", file, e);
-            return;
+            throw new RuntimeException(String.format("An error occurred while reading file %s", file));
         }
 
-        log.info("Finished importing campaign daily stats from CSV. Imported {} records, and {} records failed",
-                successes, failures);
+        long endTime = System.nanoTime();
+        long timeElapsed = endTime - startTime;
+
+        log.info("Finished importing campaign daily stats from CSV. Imported {} records, and {} records failed. Finished in {} s",
+                successes, failures, (double)timeElapsed / 1000000000);
 
         cleanup();
 
         lock.setLocked(true);
         importLockRepository.save(lock);
+
+        return true;
     }
 
     private ObjectReader getObjectReader() {
