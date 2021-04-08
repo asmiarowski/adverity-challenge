@@ -16,7 +16,7 @@ public class ImporterController {
     private final CampaignDailyStatsImporter importer;
 
     @RequestMapping("/refresh")
-    public LockResponse getStatsBetweenDates() throws IOException {
-        return new LockResponse(importer.run());
+    public ImporterResponse getStatsBetweenDates() throws IOException {
+        return new ImporterResponse(importer.run());
     }
 }

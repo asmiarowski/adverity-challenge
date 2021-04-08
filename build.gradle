@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.4.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'io.freefair.lombok' version '5.3.3.3'
+	id 'org.asciidoctor.convert' version '1.5.6'
 	id 'java'
 }
 
@@ -11,6 +12,12 @@ sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
+}
+
+asciidoctor {
+	sourceDir 'src/main/asciidoc'
+	attributes \
+      'snippets': file('build/generated-snippets')
 }
 
 dependencies {

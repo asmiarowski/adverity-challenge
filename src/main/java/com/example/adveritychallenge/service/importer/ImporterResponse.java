@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class LockResponse {
+public class ImporterResponse {
     private boolean success;
 }

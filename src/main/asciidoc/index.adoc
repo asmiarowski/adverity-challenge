@@ -1,0 +1,46 @@
+= API Documentation for Adverity Challenge
+
+This is an example output for a service running at http://localhost:10150
+
+*Import statistics from csv*
+
+Run this request to import data from CSV file to MySQL.
+
+.Request
+include::{snippets}/importer/refresh/http-request.adoc[]
+
+.Response
+include::{snippets}/importer/refresh/http-response.adoc[]
+
+*Campaign statistics daily*
+
+The purpose of this endpoint is to fetch daily campaign-related statistics between specified dates. The endpoint is paginated and allows for additional filtering for specific campaigns or data sources.
+
+.Request
+include::{snippets}/campaign-statistics/daily/http-request.adoc[]
+
+.Request params
+include::{snippets}/campaign-statistics/daily/request-parameters.adoc[]
+
+.Response
+include::{snippets}/campaign-statistics/daily/http-response.adoc[]
+
+.Response params
+include::{snippets}/campaign-statistics/daily/response-fields.adoc[]
+
+
+*Campaign statistics aggregated*
+
+The purpose of this endpoint is to fetch aggregated campaign-related statistics between specified dates. The endpoint is paginated and allows for additional filtering for specific campaigns or data sources. The aggregation can be performed either by campaign or data source.
+
+.Request
+include::{snippets}/campaign-statistics/aggregated/http-request.adoc[]
+
+.Request params
+include::{snippets}/campaign-statistics/aggregated/request-parameters.adoc[]
+
+.Response
+include::{snippets}/campaign-statistics/aggregated/http-response.adoc[]
+
+.Response params
+include::{snippets}/campaign-statistics/aggregated/response-fields.adoc[]
