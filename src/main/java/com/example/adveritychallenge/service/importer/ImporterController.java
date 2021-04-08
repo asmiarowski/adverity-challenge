@@ -5,6 +5,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/importer")
 @RequiredArgsConstructor
@@ -14,7 +16,7 @@ public class ImporterController {
     private final CampaignDailyStatsImporter importer;
 
     @RequestMapping("/refresh")
-    public LockResponse getStatsBetweenDates() {
+    public LockResponse getStatsBetweenDates() throws IOException {
         return new LockResponse(importer.run());
     }
 }

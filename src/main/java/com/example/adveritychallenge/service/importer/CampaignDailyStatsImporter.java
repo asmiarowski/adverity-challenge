@@ -2,6 +2,7 @@ package com.example.adveritychallenge.service.importer;
 
 import com.example.adveritychallenge.data.CampaignDailyStats;
 import com.example.adveritychallenge.repository.CampaignDailyStatsRepository;
+import com.example.adveritychallenge.service.importer.exceptions.ImportFileNotSpecifiedException;
 import com.example.adveritychallenge.service.importer.lock.ImportLock;
 import com.example.adveritychallenge.service.importer.lock.ImportLockRepository;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -13,8 +14,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -36,6 +38,9 @@ public class CampaignDailyStatsImporter {
 
     private final ImporterProperties importerProperties;
 
+    @PersistenceContext
+    private final EntityManager entityManager;
+
     /**
      * How many lines were properly processed.
      */
@@ -55,9 +60,9 @@ public class CampaignDailyStatsImporter {
     @Value("${spring.jpa.properties.hibernate.jdbc.batch_size:30}")
     private int batchSize;
 
-    public boolean run() {
+    public boolean run() throws IOException {
         if (importerProperties.getDailyCampaignFilePath().isEmpty()) {
-            throw new RuntimeException("No file specified for csv import of campaign daily stats.");
+            throw new ImportFileNotSpecifiedException();
         }
 
         log.info("Starting campaign daily stats import from csv file.");
@@ -88,10 +93,6 @@ public class CampaignDailyStatsImporter {
             if (!campaignDailyStatsList.isEmpty()) {
                 saveBulk();
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(String.format("Unable to find file %s", file));
-        } catch (IOException e) {
-            throw new RuntimeException(String.format("An error occurred while reading file %s", file));
         }
 
         long endTime = System.nanoTime();
@@ -142,6 +143,7 @@ public class CampaignDailyStatsImporter {
      */
     private void saveBulk() {
         campaignDailyStatsRepository.saveAll(campaignDailyStatsList);
+        entityManager.clear();
 
         successes += campaignDailyStatsList.size();
         log.debug("Saved {} entries in total", successes);

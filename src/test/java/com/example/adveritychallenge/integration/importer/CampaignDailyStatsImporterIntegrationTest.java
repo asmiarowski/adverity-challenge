@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,7 @@ public class CampaignDailyStatsImporterIntegrationTest {
     private ImporterProperties importerProperties;
 
     @Test
-    void testImportsCsvWithDailyCampaignStats() {
+    void testImportsCsvWithDailyCampaignStats() throws IOException {
         var expectedLock = new ImportLock(CAMPAIGN_DAILY_STATS_CSV);
         expectedLock.setId(1);
         expectedLock.setLocked(true);

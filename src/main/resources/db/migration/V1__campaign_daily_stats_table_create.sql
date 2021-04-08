@@ -1,6 +1,6 @@
 CREATE TABLE `campaign_daily_stats`
 (
-    `id`          INT          NOT NULL AUTO_INCREMENT,
+    `id`          INT          NOT NULL,
     `campaign`    VARCHAR(255) NOT NULL,
     `datasource`  VARCHAR(255) NOT NULL,
     `impressions` BIGINT       NOT NULL,
