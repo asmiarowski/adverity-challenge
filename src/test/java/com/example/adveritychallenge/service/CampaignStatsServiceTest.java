@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,17 +29,17 @@ public class CampaignStatsServiceTest {
     private CampaignStatsService service;
 
     @Test
-    void testReturnsPageOfDailyStatistics() {
+    void testReturnsPageOfDailyStatisticsWithoutFiltering() {
         var dateSince = LocalDate.of(2019, 10, 19);
         var dateUntil = LocalDate.of(2019, 11, 20);
         var pageable = PageRequest.of(1, 20);
         var fetchedPage = new PageImpl<>(TestData.createCampaignDailyStatsList());
 
-        when(repository.findAllBetweenDates(any(), any(), any())).thenReturn(fetchedPage);
+        when(repository.findAllBetweenDates(any(), any(), any(), any(), any())).thenReturn(fetchedPage);
 
-        var resultPage = service.getDaily(dateSince, dateUntil, pageable);
+        var resultPage = service.getStatsBetweenDates(dateSince, dateUntil, List.of(), List.of(), pageable);
 
-        verify(repository).findAllBetweenDates(dateSince, dateUntil, pageable);
+        verify(repository).findAllBetweenDates(dateSince, dateUntil, List.of(), List.of(), pageable);
         assertThat(resultPage).isEqualTo(fetchedPage);
     }
 }

@@ -1,6 +1,8 @@
 package com.example.adveritychallenge.integration;
 
 import com.example.adveritychallenge.data.CampaignDailyStats;
+import com.example.adveritychallenge.data.CampaignStatsAggregate;
+import com.example.adveritychallenge.data.DailyStatsGroupBy;
 
 import java.time.LocalDate;
 
@@ -12,7 +14,6 @@ public class DatabaseData {
 
     public static CampaignDailyStats createCampaignDailyStatPickerl27th() {
         var stats = new CampaignDailyStats();
-        stats.setId(1);
         stats.setDatasource("Twitter Ads");
         stats.setCampaign("Pickerl-Erinnerung");
         stats.setDay(LocalDate.of(2019, 4, 27));
@@ -24,7 +25,6 @@ public class DatabaseData {
 
     public static CampaignDailyStats createCampaignDailyStatPickerl28th() {
         var stats = new CampaignDailyStats();
-        stats.setId(2);
         stats.setDatasource("Twitter Ads");
         stats.setCampaign("Pickerl-Erinnerung");
         stats.setDay(LocalDate.of(2019, 4, 28));
@@ -36,7 +36,6 @@ public class DatabaseData {
 
     public static CampaignDailyStats createCampaignDailyStatPickerl29th() {
         var stats = new CampaignDailyStats();
-        stats.setId(3);
         stats.setDatasource("Twitter Ads");
         stats.setCampaign("Pickerl-Erinnerung");
         stats.setDay(LocalDate.of(2019, 4, 29));
@@ -48,7 +47,6 @@ public class DatabaseData {
 
     public static CampaignDailyStats createCampaignDailyStatOOC27th() {
         var stats = new CampaignDailyStats();
-        stats.setId(4);
         stats.setDatasource("Twitter Ads");
         stats.setCampaign("ÖCC");
         stats.setDay(LocalDate.of(2019, 4, 27));
@@ -60,7 +58,6 @@ public class DatabaseData {
 
     public static CampaignDailyStats createCampaignDailyStatOOC28th() {
         var stats = new CampaignDailyStats();
-        stats.setId(5);
         stats.setDatasource("Twitter Ads");
         stats.setCampaign("ÖCC");
         stats.setDay(LocalDate.of(2019, 4, 28));
@@ -72,13 +69,70 @@ public class DatabaseData {
 
     public static CampaignDailyStats createCampaignDailyStatOOC29th() {
         var stats = new CampaignDailyStats();
-        stats.setId(6);
-        stats.setDatasource("Twitter Ads");
+        stats.setDatasource("Google Ads");
         stats.setCampaign("ÖCC");
         stats.setDay(LocalDate.of(2019, 4, 29));
         stats.setClicks(26);
         stats.setImpressions(319L);
 
         return stats;
+    }
+
+    public static CampaignStatsAggregate createCampaignGroupedStatsOOC() {
+        var aggregated = new CampaignStatsAggregate();
+        var stats1 = createCampaignDailyStatOOC27th();
+        var stats2 = createCampaignDailyStatOOC28th();
+        var stats3 = createCampaignDailyStatOOC29th();
+
+        aggregated.setImpressions(stats1.getImpressions() + stats2.getImpressions() + stats3.getImpressions());
+        aggregated.setClicks((long) stats1.getClicks() + stats2.getClicks() + stats3.getClicks());
+        aggregated.setGroupedBy(DailyStatsGroupBy.CAMPAIGN);
+        aggregated.setGroupedByValue(stats1.getCampaign());
+
+        return aggregated;
+    }
+
+    public static CampaignStatsAggregate createCampaignGroupedStatsPickerl() {
+        var aggregated = new CampaignStatsAggregate();
+        var stats1 = createCampaignDailyStatPickerl27th();
+        var stats2 = createCampaignDailyStatPickerl28th();
+        var stats3 = createCampaignDailyStatPickerl29th();
+
+        aggregated.setImpressions(stats1.getImpressions() + stats2.getImpressions() + stats3.getImpressions());
+        aggregated.setClicks((long) stats1.getClicks() + stats2.getClicks() + stats3.getClicks());
+        aggregated.setGroupedBy(DailyStatsGroupBy.CAMPAIGN);
+        aggregated.setGroupedByValue(stats1.getCampaign());
+
+        return aggregated;
+    }
+
+    public static CampaignStatsAggregate createDatasourceGroupedStatsTwitter() {
+        var aggregated = new CampaignStatsAggregate();
+        var stats1 = createCampaignDailyStatPickerl27th();
+        var stats2 = createCampaignDailyStatPickerl28th();
+        var stats3 = createCampaignDailyStatPickerl29th();
+        var stats4 = createCampaignDailyStatOOC27th();
+        var stats5 = createCampaignDailyStatOOC28th();
+
+        aggregated.setImpressions(stats1.getImpressions() + stats2.getImpressions() + stats3.getImpressions() +
+                stats4.getImpressions() + stats5.getImpressions());
+        aggregated.setClicks((long) stats1.getClicks() + stats2.getClicks() + stats3.getClicks() + stats4.getClicks() +
+                stats5.getClicks());
+        aggregated.setGroupedBy(DailyStatsGroupBy.DATASOURCE);
+        aggregated.setGroupedByValue(stats1.getDatasource());
+
+        return aggregated;
+    }
+
+    public static CampaignStatsAggregate createDatasourceGroupedStatsGoogle() {
+        var aggregated = new CampaignStatsAggregate();
+        var stats = createCampaignDailyStatOOC29th();
+
+        aggregated.setImpressions(stats.getImpressions());
+        aggregated.setClicks((long) stats.getClicks());
+        aggregated.setGroupedBy(DailyStatsGroupBy.DATASOURCE);
+        aggregated.setGroupedByValue(stats.getDatasource());
+
+        return aggregated;
     }
 }

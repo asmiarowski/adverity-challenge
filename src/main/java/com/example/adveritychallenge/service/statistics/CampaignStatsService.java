@@ -1,6 +1,8 @@
 package com.example.adveritychallenge.service.statistics;
 
 import com.example.adveritychallenge.data.CampaignDailyStats;
+import com.example.adveritychallenge.data.CampaignStatsAggregate;
+import com.example.adveritychallenge.data.DailyStatsGroupBy;
 import com.example.adveritychallenge.repository.CampaignDailyStatsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -8,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +26,24 @@ public class CampaignStatsService {
      * @param until Last date of the list of daily statistics to fetch - inclusive.
      * @param pageable Pagination object
      */
-    public Page<CampaignDailyStats> getDaily(LocalDate since, LocalDate until, Pageable pageable) {
-        return repository.findAllBetweenDates(since, until, pageable);
+    public Page<CampaignDailyStats> getStatsBetweenDates(
+            LocalDate since,
+            LocalDate until,
+            List<String> campaignFilters,
+            List<String> datasourceFilters,
+            Pageable pageable
+    ) {
+        return repository.findAllBetweenDates(since, until, campaignFilters, datasourceFilters, pageable);
+    }
+
+    public Page<CampaignStatsAggregate> getAggregatedStatsBetweenDates(
+            LocalDate since,
+            LocalDate until,
+            List<String> campaignFilters,
+            List<String> datasourceFilters,
+            DailyStatsGroupBy groupBy,
+            Pageable pageable
+    ) {
+        return repository.findAllBetweenDatesGroupedBy(since, until, campaignFilters, datasourceFilters, groupBy, pageable);
     }
 }

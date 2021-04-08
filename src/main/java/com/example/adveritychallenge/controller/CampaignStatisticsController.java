@@ -1,6 +1,8 @@
 package com.example.adveritychallenge.controller;
 
 import com.example.adveritychallenge.data.CampaignDailyStats;
+import com.example.adveritychallenge.data.CampaignStatsAggregate;
+import com.example.adveritychallenge.data.DailyStatsGroupBy;
 import com.example.adveritychallenge.service.statistics.CampaignStatsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/campaign-statistics")
@@ -21,12 +24,26 @@ public class CampaignStatisticsController {
 
     private final CampaignStatsService service;
 
-    @RequestMapping(path = "/daily")
-    public Page<CampaignDailyStats> getDaily(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate since,
-                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate until,
-                                             Pageable pageable) {
-        var result = service.getDaily(since, until, pageable);
+    @RequestMapping("/daily")
+    public Page<CampaignDailyStats> getStatsBetweenDates(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate since,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate until,
+            @RequestParam(required = false, defaultValue = "") List<String> campaignFilters,
+            @RequestParam(required = false, defaultValue = "") List<String> datasourceFilters,
+            Pageable pageable
+    ) {
+        return service.getStatsBetweenDates(since, until, campaignFilters, datasourceFilters, pageable);
+    }
 
-        return result;
+    @RequestMapping("/aggregated")
+    public Page<CampaignStatsAggregate> getStatsBetweenDates(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate since,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate until,
+            @RequestParam(required = false, defaultValue = "") List<String> campaignFilters,
+            @RequestParam(required = false, defaultValue = "") List<String> datasourceFilters,
+            @RequestParam(required = false) DailyStatsGroupBy groupBy,
+            Pageable pageable
+    ) {
+        return service.getAggregatedStatsBetweenDates(since, until, campaignFilters, datasourceFilters, groupBy, pageable);
     }
 }

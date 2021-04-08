@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Sql(scripts = "classpath:db/cleanup.sql")
 public class CampaignDailyStatsImporterIntegrationTest {
 
     @Autowired
@@ -47,8 +49,9 @@ public class CampaignDailyStatsImporterIntegrationTest {
         importer.run();
 
         assertThat(statsRepository.count()).isEqualTo(8);
-        var exampleEntry = statsRepository.findAllBetweenDates(date, date, Pageable.unpaged()).getContent();
-        assertThat(exampleEntry).isEqualTo(List.of(expectedExampleEntry));
+        var exampleEntry = statsRepository.findAllBetweenDates(date, date, List.of(), List.of(),
+                PageRequest.of(0, 1)).getContent();
+        assertThat(exampleEntry).usingRecursiveComparison().ignoringFields("id").isEqualTo(List.of(expectedExampleEntry));
         assertThat(lockRepository.findByImporterType(CAMPAIGN_DAILY_STATS_CSV)).isEqualTo(Optional.of(expectedLock));
     }
 }

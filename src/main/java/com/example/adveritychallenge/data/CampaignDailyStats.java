@@ -1,5 +1,6 @@
 package com.example.adveritychallenge.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ public class CampaignDailyStats {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Integer id;
 
     private String campaign;
