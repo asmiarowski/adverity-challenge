@@ -1,0 +1,37 @@
+version: "3"
+services:
+  adverity-challenge:
+    image: xstream/openjdk:11-jre-slim
+    environment:
+      WAIT_FOR_MYSQL: "mysql:3306"
+      JAVA_TOOL_OPTIONS: "
+        -Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:10151
+        -Xmx256m
+      "
+    expose:
+      - "10150"
+      - "10151"
+    ports:
+      - "10150:10150"
+      - "10151:10151"
+    user: ${DOCKER_COMPOSE_UID_GID}
+    volumes:
+      - "./build/:/build/:rw"
+      - "./docker/wait-for-it.sh:/wait-for-it.sh:ro"
+      - "./docker/wait-for-deps.sh:/wait-for-deps.sh:ro"
+    command: "/wait-for-deps.sh java -jar /build/libs/adverity-challenge-0.0.1-SNAPSHOT.jar"
+    depends_on:
+      - mysql
+    networks:
+      - default
+  mysql:
+    image: mysql:5.7.33
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "local+password"
+      MYSQL_DATABASE: adverity_challenge
+    networks:
+      - default

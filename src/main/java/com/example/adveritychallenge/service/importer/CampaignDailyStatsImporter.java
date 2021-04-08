@@ -10,6 +10,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -51,11 +52,8 @@ public class CampaignDailyStatsImporter {
      */
     private final List<CampaignDailyStats> campaignDailyStatsList = new ArrayList<>();
 
-    /**
-     * After campaignDailyStatsList reach this count, we dump the list to database as bulk inserts and clear it for
-     * further processing.
-     */
-    private static final int SAVE_BULK_ON_COUNT = 1000;
+    @Value("${spring.jpa.properties.hibernate.jdbc.batch_size:1000}")
+    private int batchSize;
 
     public void run() {
         log.info("Starting campaign daily stats import from csv file.");
@@ -75,7 +73,7 @@ public class CampaignDailyStatsImporter {
             while (mappingIterator.hasNext()) {
                 readLine(mappingIterator);
 
-                if (campaignDailyStatsList.size() >= SAVE_BULK_ON_COUNT) {
+                if (campaignDailyStatsList.size() >= batchSize) {
                     saveBulk();
                 }
             }

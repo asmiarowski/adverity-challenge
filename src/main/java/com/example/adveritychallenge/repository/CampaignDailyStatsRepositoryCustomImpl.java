@@ -81,6 +81,7 @@ class CampaignDailyStatsRepositoryCustomImpl implements CampaignDailyStatsReposi
 
         var totalRows = getTotalRowsForFindAllBetweenDates(criteriaBuilder, since, until, campaignFilters,
                 datasourceFilters, groupBy);
+
         return new PageImpl<>(entityManager.createQuery(criteriaQuery).getResultList(), pageable, totalRows);
     }
 
