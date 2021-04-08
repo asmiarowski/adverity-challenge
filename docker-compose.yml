@@ -4,6 +4,10 @@ services:
     image: xstream/openjdk:11-jre-slim
     environment:
       WAIT_FOR_MYSQL: "mysql:3306"
+      MYSQL_HOST: "mysql"
+      MYSQL_PORT: "3306"
+      MYSQL_USERNAME: "root"
+      MYSQL_PASSWORD: "local+password"
       JAVA_TOOL_OPTIONS: "
         -Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:10151
         -Xmx256m
@@ -19,6 +23,7 @@ services:
       - "./build/:/build/:rw"
       - "./docker/wait-for-it.sh:/wait-for-it.sh:ro"
       - "./docker/wait-for-deps.sh:/wait-for-deps.sh:ro"
+      - "./docker/campaign-daily-stats.csv:/campaign-daily-stats.sh:ro"
     command: "/wait-for-deps.sh java -jar /build/libs/adverity-challenge-0.0.1-SNAPSHOT.jar"
     depends_on:
       - mysql
