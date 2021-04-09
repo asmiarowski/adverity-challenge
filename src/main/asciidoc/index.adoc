@@ -4,13 +4,15 @@ This is an example output for a service running at http://localhost:10150
 
 *Import statistics from csv*
 
-Run this request to import data from CSV file to MySQL.
+Run this request to import data from CSV file to MySQL. This is a simplification for demo purpose, on a production
+environment the file would be pulled from external source periodically through cron scheduler, but for the purpose of
+this challenge I've made it triggered through API call.
 
 .Request
-include::{snippets}/importer/refresh/http-request.adoc[]
+include::{snippets}/import/http-request.adoc[]
 
 .Response
-include::{snippets}/importer/refresh/http-response.adoc[]
+include::{snippets}/import/http-response.adoc[]
 
 *Campaign statistics daily*
 

@@ -21,11 +21,11 @@ public class ImporterControllerTest extends BaseApiControllerTest {
     void testReturnsDailyCampaignStatisticsWithoutFiltering() throws Exception {
         when(importer.run()).thenReturn(true);
 
-        ResultActions response = mockMvc.perform(get("/importer/refresh"));
+        ResultActions response = mockMvc.perform(get("/import"));
 
         verify(importer).run();
         validateSuccessJsonResponse(response, serializer.writeValueAsString(new ImporterResponse(true)));
 
-        response.andDo(document("importer/refresh"));
+        response.andDo(document("import"));
     }
 }
