@@ -34,6 +34,8 @@ docker-compose up
 It will host the application under `http://localhost:10150`, the debug port is also open at `http://localhost:10151` allowing remote debugging through IDE.
 MySQL is also exposed, you can find password and port in the `docker-compose.yml` file in project directory.
 
+First request to API may be a bit slower due to Spring Boot lazy loading mechanisms.
+
 # How to load CSV
 
 The CSV file with statistics is loaded automatically into docker volume. To load a different file, replace `{projectDir}/docker/campaign-daily-stats.csv` file.
