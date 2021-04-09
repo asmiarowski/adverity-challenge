@@ -1,8 +1,8 @@
 package com.example.adveritychallenge.integration;
 
-import com.example.adveritychallenge.data.CampaignDailyStats;
-import com.example.adveritychallenge.data.CampaignStatsAggregate;
-import com.example.adveritychallenge.data.DailyStatsGroupBy;
+import com.example.adveritychallenge.statistics.CampaignDailyStats;
+import com.example.adveritychallenge.statistics.CampaignStatsAggregate;
+import com.example.adveritychallenge.statistics.DailyStatsGroupBy;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

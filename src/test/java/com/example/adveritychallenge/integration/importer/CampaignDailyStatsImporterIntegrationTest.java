@@ -1,11 +1,11 @@
 package com.example.adveritychallenge.integration.importer;
 
 import com.example.adveritychallenge.integration.DatabaseData;
-import com.example.adveritychallenge.repository.CampaignDailyStatsRepository;
-import com.example.adveritychallenge.service.importer.CampaignDailyStatsImporter;
-import com.example.adveritychallenge.service.importer.ImporterProperties;
-import com.example.adveritychallenge.service.importer.lock.ImportLock;
-import com.example.adveritychallenge.service.importer.lock.ImportLockRepository;
+import com.example.adveritychallenge.statistics.repository.CampaignDailyStatsRepository;
+import com.example.adveritychallenge.importer.CampaignDailyStatsImporter;
+import com.example.adveritychallenge.importer.ImporterProperties;
+import com.example.adveritychallenge.importer.lock.ImportLock;
+import com.example.adveritychallenge.importer.lock.ImportLockRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.adveritychallenge.service.importer.lock.ImporterType.CAMPAIGN_DAILY_STATS_CSV;
+import static com.example.adveritychallenge.importer.lock.ImporterType.CAMPAIGN_DAILY_STATS_CSV;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(SpringExtension.class)

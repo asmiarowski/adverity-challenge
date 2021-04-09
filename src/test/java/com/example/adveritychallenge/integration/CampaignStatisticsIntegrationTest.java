@@ -1,6 +1,6 @@
 package com.example.adveritychallenge.integration;
 
-import com.example.adveritychallenge.controller.BaseApiControllerTest;
+import com.example.adveritychallenge.BaseApiControllerTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.example.adveritychallenge.data.DailyStatsGroupBy.CAMPAIGN;
+import static com.example.adveritychallenge.statistics.DailyStatsGroupBy.CAMPAIGN;
 import static com.example.adveritychallenge.integration.DatabaseData.createCampaignDailyStatOOC27th;
 import static com.example.adveritychallenge.integration.DatabaseData.createCampaignDailyStatOOC28th;
 import static com.example.adveritychallenge.integration.DatabaseData.createCampaignDailyStatOOC29th;

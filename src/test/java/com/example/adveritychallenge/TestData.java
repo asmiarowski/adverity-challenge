@@ -1,13 +1,13 @@
 package com.example.adveritychallenge;
 
-import com.example.adveritychallenge.data.CampaignDailyStats;
-import com.example.adveritychallenge.data.CampaignStatsAggregate;
+import com.example.adveritychallenge.statistics.CampaignDailyStats;
+import com.example.adveritychallenge.statistics.CampaignStatsAggregate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.example.adveritychallenge.data.DailyStatsGroupBy.CAMPAIGN;
+import static com.example.adveritychallenge.statistics.DailyStatsGroupBy.CAMPAIGN;
 
 /**
  * The purpose of this class is to prepare example data objects to be used during unit testing.
