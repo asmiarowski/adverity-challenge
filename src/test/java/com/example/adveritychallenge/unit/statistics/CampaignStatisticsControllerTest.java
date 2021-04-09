@@ -1,12 +1,15 @@
-package com.example.adveritychallenge.statistics;
+package com.example.adveritychallenge.unit.statistics;
 
 import com.example.adveritychallenge.TestData;
 import com.example.adveritychallenge.BaseApiControllerTest;
+import com.example.adveritychallenge.statistics.CampaignStatisticsController;
+import com.example.adveritychallenge.statistics.CampaignStatsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.request.ParameterDescriptor;
 import org.springframework.test.web.servlet.ResultActions;
@@ -14,30 +17,33 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_CAMPAIGN;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_CLICKS;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_CONTENT;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_CTR;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_DATASOURCE;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_DAY;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_GROUPED_BY;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_GROUPED_BY_VALUE;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_IMPRESSIONS;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_NUMBER;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_SIZE;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_TOTAL_ELEMENTS;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_TOTAL_PAGES;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_CAMPAIGN_FILTERS;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_DATASOURCE_FILTERS;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_GROUP_BY;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_PAGE;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_SINCE;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_SIZE;
-import static com.example.adveritychallenge.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_UNTIL;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_CAMPAIGN;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_CLICKS;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_CONTENT;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_CTR;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_DATASOURCE;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_DAY;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_GROUPED_BY;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_GROUPED_BY_VALUE;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_IMPRESSIONS;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_NUMBER;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_SIZE;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_TOTAL_ELEMENTS;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.FIELD_TOTAL_PAGES;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_CAMPAIGN_FILTERS;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_DATASOURCE_FILTERS;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_GROUP_BY;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_PAGE;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_SINCE;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_SIZE;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_SORT_AGGREGATED;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_SORT_DAILY;
+import static com.example.adveritychallenge.unit.statistics.CampaignStatisticsControllerTest.Documentation.PARAMETER_UNTIL;
 import static com.example.adveritychallenge.statistics.DailyStatsGroupBy.CAMPAIGN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
@@ -55,7 +61,7 @@ public class CampaignStatisticsControllerTest extends BaseApiControllerTest {
     void testReturnsDailyCampaignStatistics() throws Exception {
         var dateSince = LocalDate.of(2019, 10, 19);
         var dateUntil = LocalDate.of(2019, 11, 20);
-        var pageable = PageRequest.of(1, 20);
+        var pageable = PageRequest.of(1, 20, Sort.by(ASC, "day"));
         var resultPage = new PageImpl<>(TestData.createCampaignDailyStatsList());
 
         when(service.getStatsBetweenDates(any(), any(), any(), any(), any())).thenReturn(resultPage);
@@ -64,6 +70,7 @@ public class CampaignStatisticsControllerTest extends BaseApiControllerTest {
                 .param("since", dateSince.toString())
                 .param("until", dateUntil.toString())
                 .param("page", "1")
+                .param("sort", "day,asc")
                 .param("campaignFilters", "Pickerl-Erinnerung", "Adventmarkt Touristik")
                 .param("datasourceFilters", "Twitter Ads", "Google Ads")
         );
@@ -73,7 +80,7 @@ public class CampaignStatisticsControllerTest extends BaseApiControllerTest {
         validateSuccessJsonResponse(response, serializer.writeValueAsString(resultPage));
 
         response.andDo(document("campaign-statistics/daily",
-                requestParameters(PARAMETER_PAGE, PARAMETER_SIZE, PARAMETER_SINCE, PARAMETER_UNTIL,
+                requestParameters(PARAMETER_PAGE, PARAMETER_SIZE, PARAMETER_SORT_DAILY, PARAMETER_SINCE, PARAMETER_UNTIL,
                         PARAMETER_CAMPAIGN_FILTERS, PARAMETER_DATASOURCE_FILTERS
                 ),
                 relaxedResponseFields(FIELD_TOTAL_PAGES, FIELD_TOTAL_ELEMENTS, FIELD_NUMBER, FIELD_SIZE, FIELD_CONTENT)
@@ -102,7 +109,7 @@ public class CampaignStatisticsControllerTest extends BaseApiControllerTest {
         validateSuccessJsonResponse(response, serializer.writeValueAsString(resultPage));
 
         response.andDo(document("campaign-statistics/aggregated",
-                requestParameters(PARAMETER_PAGE, PARAMETER_SIZE, PARAMETER_SINCE, PARAMETER_UNTIL,
+                requestParameters(PARAMETER_PAGE, PARAMETER_SIZE, PARAMETER_SORT_AGGREGATED, PARAMETER_SINCE, PARAMETER_UNTIL,
                         PARAMETER_CAMPAIGN_FILTERS, PARAMETER_DATASOURCE_FILTERS, PARAMETER_GROUP_BY
                 ),
                 relaxedResponseFields(FIELD_TOTAL_PAGES, FIELD_TOTAL_ELEMENTS, FIELD_NUMBER, FIELD_SIZE, FIELD_CONTENT)
@@ -118,6 +125,12 @@ public class CampaignStatisticsControllerTest extends BaseApiControllerTest {
         static final ParameterDescriptor PARAMETER_SIZE = parameterWithName("size")
                 .optional()
                 .description("How many records should be returned per page.");
+        static final ParameterDescriptor PARAMETER_SORT_DAILY = parameterWithName("sort")
+                .optional()
+                .description("Sort by property and direction. Accepted format is 'property,direction'. It's possible to provide multiple sort parameters for sorting by multiple properties. Available sortable properties are: campaign, datasource, day, clicks, impressions, ctr");
+        static final ParameterDescriptor PARAMETER_SORT_AGGREGATED = parameterWithName("sort")
+                .optional()
+                .description("Sort by property and direction. Accepted format is 'property,direction'. It's possible to provide multiple sort parameters for sorting by multiple properties. Available sortable properties are: groupedByValue, clicks, impressions, ctr");
         static final ParameterDescriptor PARAMETER_SINCE = parameterWithName("since")
                 .description("Date since to return list of matching statistics for campaigns. Inclusive. Date format in YYYY-MM-DD.");
         static final ParameterDescriptor PARAMETER_UNTIL = parameterWithName("until")

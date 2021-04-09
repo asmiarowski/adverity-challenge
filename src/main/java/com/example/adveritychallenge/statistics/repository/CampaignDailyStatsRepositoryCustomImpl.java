@@ -6,11 +6,13 @@ import com.example.adveritychallenge.statistics.DailyStatsGroupBy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.time.LocalDate;
@@ -37,6 +39,7 @@ class CampaignDailyStatsRepositoryCustomImpl implements CampaignDailyStatsReposi
 
         var predicates = getPredicatesForFindAllBetweenDates(criteriaBuilder, root, since, until, campaignFilters, datasourceFilters);
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
+        criteriaQuery.orderBy(QueryUtils.toOrders(pageable.getSort(), root, criteriaBuilder));
 
         var query = entityManager.createQuery(criteriaQuery)
                 .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
@@ -64,19 +67,49 @@ class CampaignDailyStatsRepositoryCustomImpl implements CampaignDailyStatsReposi
         var predicates = getPredicatesForFindAllBetweenDates(criteriaBuilder, root, since, until, campaignFilters, datasourceFilters);
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
 
-        if (groupBy != null) {
-            criteriaQuery.groupBy(root.get(groupBy.getValue()));
-            var groupByExpression = criteriaBuilder.literal(groupBy.getValue());
-            criteriaQuery.select(criteriaBuilder.construct(
-                    CampaignStatsAggregate.class,
-                    groupByExpression,
-                    root.get(groupBy.getValue()),
-                    criteriaBuilder.sumAsLong(root.get("impressions")),
-                    criteriaBuilder.sumAsLong(root.get("clicks")),
-                    // MySQL is rounding down, so to fix the precision issue the value is multiplied by 1000 and has to be divided by 10 in java.
-                    criteriaBuilder.prod(1000.0, criteriaBuilder.quot(criteriaBuilder.sumAsDouble(root.get("clicks")), criteriaBuilder.sumAsDouble(root.get("impressions"))))
-            ));
-        }
+        // Group by
+
+        criteriaQuery.groupBy(root.get(groupBy.getValue()));
+        var groupByExpression = criteriaBuilder.literal(groupBy.getValue());
+        var sumImpressionsExpression = criteriaBuilder.sumAsLong(root.get("impressions"));
+        var sumClicksExpression = criteriaBuilder.sumAsLong(root.get("clicks"));
+        // MySQL is rounding down, so to fix the precision issue the value is multiplied by 1000 and has to be divided by 10 in java.
+        var ctrExpression = criteriaBuilder.prod(1000.0, criteriaBuilder.quot(criteriaBuilder.sumAsDouble(root.get("clicks")),
+                criteriaBuilder.sumAsDouble(root.get("impressions"))));
+
+        // Use non-entity object as result
+
+        criteriaQuery.select(criteriaBuilder.construct(
+                CampaignStatsAggregate.class,
+                groupByExpression,
+                root.get(groupBy.getValue()),
+                sumImpressionsExpression,
+                sumClicksExpression,
+                ctrExpression
+        ));
+
+        // Order by aggregate columns
+
+        var orderList = new ArrayList<Order>();
+        pageable.getSort().forEach(order -> {
+            switch (order.getProperty()) {
+                case "impressions":
+                    orderList.add(order.isAscending() ? criteriaBuilder.asc(sumImpressionsExpression) :
+                            criteriaBuilder.desc(sumImpressionsExpression));
+                    return;
+                case "clicks":
+                    orderList.add(order.isAscending() ? criteriaBuilder.asc(sumClicksExpression) :
+                            criteriaBuilder.desc(sumClicksExpression));
+                case "groupByValue":
+                    orderList.add(order.isAscending() ? criteriaBuilder.asc(root.get(groupBy.getValue())) :
+                            criteriaBuilder.desc(root.get(groupBy.getValue())));
+                case "ctr":
+                    orderList.add(order.isAscending() ? criteriaBuilder.asc(ctrExpression) :
+                            criteriaBuilder.desc(ctrExpression));
+            }
+        });
+
+        criteriaQuery.orderBy(orderList);
 
         var query = entityManager.createQuery(criteriaQuery)
                 .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())

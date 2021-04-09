@@ -1,6 +1,9 @@
-package com.example.adveritychallenge.importer;
+package com.example.adveritychallenge.unit.importer;
 
 import com.example.adveritychallenge.BaseApiControllerTest;
+import com.example.adveritychallenge.importer.CampaignDailyStatsImporter;
+import com.example.adveritychallenge.importer.ImporterController;
+import com.example.adveritychallenge.importer.ImporterResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;

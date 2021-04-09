@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "794e66ce-eacd-442c-8338-f9dc0cb2c2ed",
+		"name": "adverity-challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get stats between dates with filters",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:10150/campaign-statistics/daily?since=2019-01-12&until=2019-12-14&campaignFilters=GDN_Retargeting&campaignFilters=DE%7CSN%7CBrand&datasourceFilters=Google Ads&sort=ctr,desc&sort=clicks,asc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "10150",
+					"path": [
+						"campaign-statistics",
+						"daily"
+					],
+					"query": [
+						{
+							"key": "since",
+							"value": "2019-01-12"
+						},
+						{
+							"key": "until",
+							"value": "2019-12-14"
+						},
+						{
+							"key": "campaignFilters",
+							"value": "GDN_Retargeting"
+						},
+						{
+							"key": "campaignFilters",
+							"value": "DE%7CSN%7CBrand"
+						},
+						{
+							"key": "datasourceFilters",
+							"value": "Google Ads"
+						},
+						{
+							"key": "sort",
+							"value": "ctr,desc"
+						},
+						{
+							"key": "sort",
+							"value": "clicks,asc"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get aggregated stats between dates with filters",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:10150/campaign-statistics/aggregated?since=2019-01-12&until=2019-12-14&groupBy=campaign&sort=ctr,desc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "10150",
+					"path": [
+						"campaign-statistics",
+						"aggregated"
+					],
+					"query": [
+						{
+							"key": "since",
+							"value": "2019-01-12"
+						},
+						{
+							"key": "until",
+							"value": "2019-12-14"
+						},
+						{
+							"key": "campaignFilters",
+							"value": "GDN_Retargeting",
+							"disabled": true
+						},
+						{
+							"key": "campaignFilters",
+							"value": "DE%7CSN%7CBrand",
+							"disabled": true
+						},
+						{
+							"key": "groupBy",
+							"value": "campaign"
+						},
+						{
+							"key": "page",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "sort",
+							"value": "ctr,desc"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh import CSV",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:10150/import",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "10150",
+					"path": [
+						"import"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

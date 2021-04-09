@@ -19,7 +19,9 @@ To generate API documentation in HTML, run
 ./gradlew build asciidoctor
 ```
 
-The documentation will be available in `{projectDir}/build/asciidoc/html5/index.html`
+The documentation will be available in `{projectDir}/build/asciidoc/html5/index.html`.
+
+Postman collection is also available for convenience in `{projectDir}/postman` directory.
 
 ## Test application
 
@@ -38,10 +40,19 @@ The CSV file with statistics is loaded automatically into docker volume. To load
 To trigger import call `http://localhost:10150/import`
 
 The call to API is done for simplicity, to be able to trigger it manually, but on production it wouldn't be necessary 
-as we would likely have a cron scheduler to fetch new files from external source.
+as we would likely have a cron scheduler to fetch new files from an external source.
 
 This endpoint can be called only once. In case a complete refresh is needed, run `docker-compose down && docker-compose up`
 to completely refresh database locally and repeat the call.
+
+# API documentation
+
+To build HTML API documentation see "Build application" section.
+
+The documentation is generated from snippets in Controller unit tests which helps to ensure API documentation is always up to date.
+The controller unit tests are not necessary since same thing (and more) is covered by integration tests, however, because 
+integration tests are more costly. As the application grows it's beneficial to have them run on a separate Spring Profile, only 
+executed by CI/CD pipelines or just before committing to the repository. It's also quicker to generate documentation based on unit tests.
 
 # Performance
 

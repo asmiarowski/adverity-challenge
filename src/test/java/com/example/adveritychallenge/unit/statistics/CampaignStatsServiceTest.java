@@ -1,6 +1,7 @@
-package com.example.adveritychallenge.statistics;
+package com.example.adveritychallenge.unit.statistics;
 
 import com.example.adveritychallenge.TestData;
+import com.example.adveritychallenge.statistics.CampaignStatsService;
 import com.example.adveritychallenge.statistics.repository.CampaignDailyStatsRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

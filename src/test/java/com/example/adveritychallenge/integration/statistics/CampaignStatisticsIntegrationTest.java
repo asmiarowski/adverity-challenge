@@ -1,4 +1,4 @@
-package com.example.adveritychallenge.integration;
+package com.example.adveritychallenge.integration.statistics;
 
 import com.example.adveritychallenge.BaseApiControllerTest;
 import org.junit.jupiter.api.Test;
@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -26,6 +27,7 @@ import static com.example.adveritychallenge.integration.DatabaseData.createCampa
 import static com.example.adveritychallenge.integration.DatabaseData.createCampaignGroupedStatsPickerl;
 import static com.example.adveritychallenge.integration.DatabaseData.createDatasourceGroupedStatsGoogle;
 import static com.example.adveritychallenge.integration.DatabaseData.createDatasourceGroupedStatsTwitter;
+import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 
 @ExtendWith(SpringExtension.class)
@@ -212,6 +214,49 @@ public class CampaignStatisticsIntegrationTest extends BaseApiControllerTest {
                 .param("until", dateUntil.toString())
                 .param("page", "1")
                 .param("size", "3")
+        );
+
+        validateSuccessJsonResponse(response, serializer.writeValueAsString(resultPage));
+    }
+
+    @Test
+    void testReturnsDailyCampaignStatisticsSorted() throws Exception {
+        var dateSince = LocalDate.of(2019, 4, 27);
+        var dateUntil = LocalDate.of(2019, 4, 29);
+        var pageable = PageRequest.of(0, 20, Sort.by(ASC, "day"));
+        var resultPage = new PageImpl<>(List.of(
+                createCampaignDailyStatPickerl27th(),
+                createCampaignDailyStatOOC27th(),
+                createCampaignDailyStatPickerl28th(),
+                createCampaignDailyStatOOC28th(),
+                createCampaignDailyStatPickerl29th(),
+                createCampaignDailyStatOOC29th()
+        ), pageable, 6);
+
+        ResultActions response = mockMvc.perform(get("/campaign-statistics/daily")
+                .param("since", dateSince.toString())
+                .param("until", dateUntil.toString())
+                .param("sort", "day,asc")
+        );
+
+        validateSuccessJsonResponse(response, serializer.writeValueAsString(resultPage));
+    }
+
+    @Test
+    void testReturnsCampaignStatisticsGroupedByCampaignSorted() throws Exception {
+        var dateSince = LocalDate.of(2019, 4, 27);
+        var dateUntil = LocalDate.of(2019, 4, 29);
+        var pageable = PageRequest.of(0, 20, Sort.by(ASC, "ctr"));
+        var resultPage = new PageImpl<>(List.of(
+                createCampaignGroupedStatsOOC(),
+                createCampaignGroupedStatsPickerl()
+        ), pageable, 2);
+
+        ResultActions response = mockMvc.perform(get("/campaign-statistics/aggregated")
+                .param("since", dateSince.toString())
+                .param("until", dateUntil.toString())
+                .param("groupBy", "campaign")
+                .param("sort", "ctr,asc")
         );
 
         validateSuccessJsonResponse(response, serializer.writeValueAsString(resultPage));
